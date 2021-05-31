@@ -1,7 +1,11 @@
 import firebase from "firebase/app";
-import "firebase/auth"
+import "firebase/auth";
 // firebase의 database를 firestore라 함
-import "firebase/firestore"
+import "firebase/firestore";
+import "firebase/storage";
+
+
+
 //   실질적 코드를 숨기고 .env에 정리하는 이유는 
 // github에 노출되는 것을 막기위함. 어차피 웹에서 firebase접근시 노출되나 github에서만 막기위함.
 // gitignore을 통해 업데이트하지 않을 수 있음.
@@ -19,8 +23,9 @@ const firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 
+// firebase는 모듈에서 나온것.
 //  모든걸 export하는 대신  auth서비스만 export
 export const authService = firebase.auth();
 export const firebaseInstance = firebase;
 export const dbService = firebase.firestore();
-// firebase는 모듈에서 나온것.
+export const storageService = firebase.storage();

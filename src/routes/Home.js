@@ -1,6 +1,7 @@
-import { dbService } from "fBase";
+import { dbService, storageService } from "fBase";
 import React, { useEffect,useState } from "react";
 import Nweet from "components/Nweet";
+import {v4 as uuidv4} from "uuid"
 
 
 // userObj props를받음(App로그인 -> 라우터 -> 홈)
@@ -13,6 +14,7 @@ const Home = ({userObj}) => {
     const [nweet, setNweet] = useState("");
     // Read - collection get
     const [nweets,setNweets] = useState([]);
+    const [attachment,setAttachment] = useState("")
 
     /*const getNweets = async()=>{
         // get은 collection에서 doc를 QuerySnapShat형태로 가져옴.
@@ -48,15 +50,32 @@ const Home = ({userObj}) => {
     },[])
     const onSubmit = async (event) => {
         event.preventDefault();
-        // add는 doc를 collection에 넣음.
-        // add는 promise를 내보냄(마우스대면 나옴)
-        // => async await쓰기
-        await dbService.collection("nweets").add({
+        // if문 안에서는 밖으로 못나오기 때문에 let변수처리해서 값이 바뀔수 있게끔.
+        let attachmentUrl = "";
+        if(attachment !== "") {
+                    // child는 collection같은 느낌. 뒤에는 주소같이 
+        // 1. file의 reference를 만듦. 
+        // (userid로 만든 refence폴더가 bucket에 들어가고 uuid로 랜덤한 이미지네임으로 data를 받을 준비를함.)
+        const attachmentRef = storageService.ref().child(`${userObj.uid}/${uuidv4()}`)
+        //2. 파일데이터를 reference로 보냄.
+        // putString은 data와 data formet이 필요함. 사진을 url형식으로 refernce에 넣음.
+        const response = await attachmentRef.putString(attachment, "data_url");
+        // promise를 리턴하는 함수는 날 기다려줘! 의 의미
+        // console.log(await response.ref.getDownloadURL());
+        attachmentUrl = await response.ref.getDownloadURL();
+        }
+        const nweetObj = {
             text:nweet,
             createdAt: Date.now(),
             creatorId: userObj.uid,
-        });
+            attachmentUrl,
+        }
+        // add는 doc를 collection에 넣음.
+        // add는 promise를 내보냄(마우스대면 나옴)
+        // => async await쓰기
+        await dbService.collection("nweets").add(nweetObj);
         setNweet("");
+        setAttachment("");
     }
     // event안에있는 target안에있는 value를 주세요
     const onChange = (event) => {
@@ -65,11 +84,42 @@ const Home = ({userObj}) => {
         } = event;
         setNweet(value);
     }
+    const onFileChange = (event) => {
+        // console.log(event.target.files);
+        // event안의 target으로가서 files를 받아오는 ES6문법.
+        // files 안의 배열에서 
+        const {target:{files}} = event;
+        const theFile = files[0];
+        // console.log(theFile);
+
+        // FileReader API이용. MDN참조.
+        const reader = new FileReader();
+        // URL읽는게(loading이) 끝나면 finishedEvent를 갖게되는데 이걸 받아 가져옴.
+        // 이 객체 안의 result URL은 브라우저에서 볼수있는 사진에 대한 주소
+        reader.onloadend = (finishedEvent) => {
+            // console.log(finishedEvent);
+            const {currentTarget: {result}} = finishedEvent;
+            setAttachment(result);
+        }
+        // reader기능을 만들고 theFile의 URL을 읽어옴.
+        reader.readAsDataURL(theFile);
+    }
+    const onClearAtttachment = () => setAttachment(null)
+    // image파일을 받을껀데 /(형식)이고 /*은 이미지파일이면 어떤형식이든 받는다는뜻.
     return(
         <div>
             <form onSubmit={onSubmit}>
                 <input value={nweet} onChange={onChange} type="text" placeholder="What's on your mind?" maxLength={120} />
+                <input type="file" accept="image/*" onChange={onFileChange}/>
                 <input type="submit" value="Nweet" />
+                {attachment && (
+                    <div>
+                        <img src={attachment} alt="" width="50px" height="50px" />
+                        <button onClick={onClearAtttachment}>Clear</button>
+                    </div>
+                    )
+                }
+                
             </form>
             <div>
                 {nweets.map(nweet => (

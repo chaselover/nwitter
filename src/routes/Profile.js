@@ -1,5 +1,5 @@
 import { authService } from "fBase";
-import React, { Fragment, useState } from "react"
+import React, { useState } from "react"
 import { useHistory } from "react-router";
 
 
@@ -45,13 +45,22 @@ const Profile = ({refreshUser, userObj}) => {
 
 
     return (
-        <Fragment>
-        <form onSubmit={onSubmit}>
-            <input onChange={onChange} value={newDisplayName} type="text" placeholder="Display name" />
-            <input type="submit" value="Update Profile" />
-        </form>
-            <button onClick={onLogOutClick}>Log Out</button>
-        </Fragment>
+        <div className="container">
+            <form onSubmit={onSubmit} className="profileForm">
+                <input onChange={onChange} autoFocus value={newDisplayName} type="text" className="formInput" placeholder="Display name" />
+                <input
+                type="submit"
+                value="Update Profile"
+                className="formBtn"
+                style={{
+                  marginTop: 10,
+                }}
+                />        
+            </form>
+            <span className="formBtn cancelBtn logOut" onClick={onLogOutClick}>
+            Log Out
+            </span>        
+        </div>
     )
 }
 export default Profile;

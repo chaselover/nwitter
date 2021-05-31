@@ -1,5 +1,7 @@
 import React, { useState, Fragment } from "react"
 import { dbService, storageService } from "fBase";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash, faPencilAlt } from "@fortawesome/free-solid-svg-icons";
 
 // isOwner가 true면 Fragment가 보임.
 const Nweet = ({nweetObj, isOwner}) => {
@@ -34,28 +36,34 @@ const Nweet = ({nweetObj, isOwner}) => {
         setNewNweet(value);
     }
     return(
-        <div>
+        <div className="nweet">
             {editing ? (
                 <Fragment>
                     {isOwner &&
                         <Fragment>
-                            <form onSubmit={onSubmit}>
-                                <input type="text" placeholder="Edit your nweet" value={newNweet} onChange={onChange} required />
-                                <input type="submit" value="Update Nweet" />
+                            <form className="container nweetEdit" onSubmit={onSubmit}>
+                                <input type="text" className="formInput" autoFocus placeholder="Edit your nweet" value={newNweet} onChange={onChange} required />
+                                <input type="submit" className="formBtn" value="Update Nweet" />
                             </form>
-                            <button onClick={toggleEditiong}>Cancel</button>
+                            <span onClick={toggleEditing} className="formBtn cancelBtn">
+                                Cancel
+                            </span>
                         </Fragment>    
                     }
                 </Fragment>
             ) : (
                 <Fragment>
                 <h4>{nweetObj.text}</h4>
-                {nweetObj.attachmentUrl && <img src={nweetObj.attachmentUrl} alt="" width="50px" height="50px" />}
+                {nweetObj.attachmentUrl && <img src={nweetObj.attachmentUrl} />}
                 {isOwner && (
-                    <Fragment>
-                        <button onClick={onDeleteClick}>Delete Nweet</button>
-                        <button onClick={toggleEditiong}>Edit Nweet</button>
-                    </Fragment>
+                    <div class="nweet__actions">
+                        <span onClick={onDeleteClick}>
+                            <FontAwesomeIcon icon={faTrash} />
+                        </span>
+                        <span onClick={toggleEditing}>
+                            <FontAwesomeIcon icon={faPencilAlt} />
+                        </span>
+                    </div>
                 )}
                 </Fragment>
             )}

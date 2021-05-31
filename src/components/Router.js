@@ -11,6 +11,7 @@ import Profile from "routes/Profile";
 // app으로부터 props인 isloggedin을 받음
 // router component는 router역할만 하기위해 hook을 제외.
 // redirect는 Route에 있을 때를 제외한 나머지 주소는 "/"(home)로 가라는뜻
+/* <Redirect from="*" to="/" /> */
 const AppRouter = ({isLoggedIn, userObj, refreshUser}) => {    
     return(
         <Router>
@@ -33,9 +34,8 @@ const AppRouter = ({isLoggedIn, userObj, refreshUser}) => {
                         <Route exact path="/profile">
                             <Profile userObj={userObj} refreshUser={refreshUser} />
                         </Route>
-                        {/* <Redirect from="*" to="/" /> */}
                     </div>
-                ):(
+                ) : (
                     <Route exact path="/">
                          <Auth /> 
                     </Route>

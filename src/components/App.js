@@ -52,7 +52,7 @@ function App() {
   return (
     <Fragment>
       {init ? <AppRouter refreshUser={refreshUser} isLoggedIn={Boolean(userObj)} userObj={userObj} /> : "Initializing..." }
-      <footer>&copy; Nwitter {new Date().getFullYear()}</footer>
+      <div className="footer">&copy; Nwitter {new Date().getFullYear()}</div>
     </Fragment>
   );
 }

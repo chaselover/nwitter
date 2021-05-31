@@ -274,3 +274,7 @@ form {
   font-size: 12px;
   text-decoration: underline;
 }
+
+.footer {
+    margin: 0 auto;
+}

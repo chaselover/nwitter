@@ -20,7 +20,7 @@ const Nweet = ({nweetObj, isOwner}) => {
             await storageService.refFromURL(nweetObj.attachmentUrl).delete();
         }
     }
-    const toggleEditiong = () => {
+    const toggleEditing = () => {
         setEditing((prev) => !prev)
     }
     const onSubmit = async (event) => {
@@ -54,9 +54,9 @@ const Nweet = ({nweetObj, isOwner}) => {
             ) : (
                 <Fragment>
                 <h4>{nweetObj.text}</h4>
-                {nweetObj.attachmentUrl && <img src={nweetObj.attachmentUrl} />}
+                {nweetObj.attachmentUrl && <img src={nweetObj.attachmentUrl} alt=""/>}
                 {isOwner && (
-                    <div class="nweet__actions">
+                    <div className="nweet__actions">
                         <span onClick={onDeleteClick}>
                             <FontAwesomeIcon icon={faTrash} />
                         </span>
